@@ -19,10 +19,7 @@ jobs:
           distribution: 'graalvm' # See 'Supported distributions' for available options
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - run: |
-          ./gradlew \ 
-          -Pbuild.number=${{ github.run_number }} \
-          -Pgithub.token=${{ secrets.GITHUB_TOKEN }} \
-          createRelease
+          ./gradlew -Pbuild.number=${{ github.run_number }} -Pgithub.token=${{ secrets.GITHUB_TOKEN }} createRelease
   build:
     name: Build for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
