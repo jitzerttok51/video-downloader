@@ -38,6 +38,7 @@ abstract class UploadToRelease : DefaultTask() {
             .url("https://api.github.com/repos/jitzerttok51/video-downloader/releases/tags/v$version")
             .header("Accept", "application/vnd.github+json")
             .header("X-GitHub-Api-Version", "2022-11-28")
+            .header("Authorization", "Bearer $token")
             .build()
 
         client.newCall(request).execute().use { response ->
