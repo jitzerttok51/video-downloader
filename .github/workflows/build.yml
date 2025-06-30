@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  creat-release:
+  create-release:
     name: Create release
     runs-on: ubuntu-latest
     permissions:
