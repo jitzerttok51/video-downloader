@@ -17,6 +17,9 @@ abstract class CreateRelease : DefaultTask() {
     @get:Input
     abstract val accessToken: Property<String>
 
+    @get:Input
+    abstract val preRelease: Property<Boolean>
+
     @TaskAction
     fun execute() {
         createRelease(version.get(), accessToken.get())
@@ -29,7 +32,7 @@ abstract class CreateRelease : DefaultTask() {
         body.put("target_commitish", "main")
         body.put("name", "v$version")
         body.put("draft", false)
-        body.put("prerelease", false)
+        body.put("prerelease", preRelease.get())
         body.put("generate_release_notes", false)
 
         val request = Request.Builder()
