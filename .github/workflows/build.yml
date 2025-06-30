@@ -31,7 +31,7 @@ jobs:
           native-image --version
       - name: Build gradle
         if: runner.os == 'Windows'
-        run: gradlew -Pbuild.number=${{ github.run_number }} nativeCompile
+        run: .\gradlew -Pbuild.number=${{ github.run_number }} nativeCompile
       - name: Build gradle *nix
         if: runner.os != 'Windows'
         run: ./gradlew -Pbuild.number=${{ github.run_number }} nativeCompile
