@@ -1,0 +1,37 @@
+name: Build native executable
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    name: Build for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ macos-latest, windows-latest, ubuntu-latest ]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '21'      # See 'Options' for more details
+          distribution: 'graalvm' # See 'Supported distributions' for available options
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Example step win
+        if: runner.os == 'Windows'
+        run: |
+          echo "GRAALVM_HOME: %GRAALVM_HOME%"
+          echo "JAVA_HOME: %JAVA_HOME%"
+          java --version
+          native-image --version
+      - name: Example step *nix
+        if: runner.os != 'Windows'
+        run: |
+          echo "GRAALVM_HOME: $GRAALVM_HOME"
+          echo "JAVA_HOME: $JAVA_HOME"
+          java --version
+          native-image --version
+      - name: Build gradle
+        if: runner.os == 'Windows'
+        run: gradlew -Pbuild.number=${{ github.run_number }} nativeCompile
+      - name: Build gradle *nix
+        if: runner.os != 'Windows'
+        run: ./gradlew -Pbuild.number=${{ github.run_number }} nativeCompile

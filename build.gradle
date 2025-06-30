@@ -1,0 +1,5 @@
+
+subprojects {
+    version =
+            "${project.properties["build.major"]}.${project.properties["build.minor"]}.${project.properties["build.number"]}."
+}
