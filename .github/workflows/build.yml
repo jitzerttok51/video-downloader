@@ -1,10 +1,34 @@
 name: Build native executable
-on: [push, workflow_dispatch]
+on:
+  push:
+    branches:
+      - "main"
+  workflow_dispatch:
 
 jobs:
+  creat-release:
+    name: Create release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '21'      # See 'Options' for more details
+          distribution: 'graalvm' # See 'Supported distributions' for available options
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - run: |
+          ./gradlew \ 
+          -Pbuild.number=${{ github.run_number }} \
+          -Pgithub.token=${{ secrets.GITHUB_TOKEN }} \
+          createRelease
   build:
     name: Build for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    needs: [ create-release ]
+    permissions:
+      contents: write
     strategy:
       matrix:
         os: [ macos-latest, windows-latest, ubuntu-latest ]
@@ -15,23 +39,10 @@ jobs:
           java-version: '21'      # See 'Options' for more details
           distribution: 'graalvm' # See 'Supported distributions' for available options
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Example step win
-        if: runner.os == 'Windows'
-        run: |
-          echo "GRAALVM_HOME: %GRAALVM_HOME%"
-          echo "JAVA_HOME: %JAVA_HOME%"
-          java --version
-          native-image --version
-      - name: Example step *nix
-        if: runner.os != 'Windows'
-        run: |
-          echo "GRAALVM_HOME: $GRAALVM_HOME"
-          echo "JAVA_HOME: $JAVA_HOME"
-          java --version
-          native-image --version
       - name: Build gradle
         if: runner.os == 'Windows'
-        run: gradlew -Pbuild.number=${{ github.run_number }} nativeCompile
+        shell: cmd
+        run: gradlew.bat -Pbuild.number=${{ github.run_number }} -Pgithub.token=${{ secrets.GITHUB_TOKEN }} uploadAsset
       - name: Build gradle *nix
         if: runner.os != 'Windows'
-        run: ./gradlew -Pbuild.number=${{ github.run_number }} nativeCompile
+        run: ./gradlew -Pbuild.number=${{ github.run_number }} -Pgithub.token=${{ secrets.GITHUB_TOKEN }} uploadAsset
