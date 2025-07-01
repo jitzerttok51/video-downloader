@@ -8,10 +8,12 @@ import org.example.update.exceptions.UpdateRepositoryResponseCodeException;
 import org.example.update.model.GithubRelease;
 import org.example.update.model.Update;
 import org.example.update.model.UpdatePart;
+import org.example.update.model.UpdateType;
 import org.example.update.utils.GithubCommonsInterceptor;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
 
 public class GithubUpdateRepository implements UpdateRepository {
@@ -44,8 +46,9 @@ public class GithubUpdateRepository implements UpdateRepository {
             var body = mapper.readValue(response.body().string(), Argument.listOf(GithubRelease.class));
             return body.stream()
                     .map(GithubRelease::toUpdate)
+                    .filter(p -> snapshots || p.type() == UpdateType.RELEASE)
+                    .sorted(Comparator.comparing(Update::version).reversed())
                     .toList();
-            // TODO: Order and filter
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

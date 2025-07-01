@@ -6,6 +6,9 @@ import org.example.update.factory.UpdateRepositoryFactory;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 @Command(name = "demo", description = "...", mixinStandardHelpOptions = true)
 public class DemoCommand implements Runnable {
 
@@ -21,8 +24,6 @@ public class DemoCommand implements Runnable {
         PicocliRunner.run(DemoCommand.class, args);
     }
 
-<<<<<<< Updated upstream
-=======
     @Inject
     public void setAppInfoService(AppInfoService appInfoService) {
         this.appInfoService = appInfoService;
@@ -33,7 +34,6 @@ public class DemoCommand implements Runnable {
         this.updateRepositoryFactory = updateRepositoryFactory;
     }
 
->>>>>>> Stashed changes
     public void run() {
         // business logic here
         System.out.println("Test! "+appInfoService.getVersion());
@@ -43,7 +43,7 @@ public class DemoCommand implements Runnable {
 
         var repo = updateRepositoryFactory
                 .retrieveUpdateRepository("github:jitzerttok51/video-downloader");
-        System.out.println(repo.getUpdates());
+        System.out.println(repo.getUpdates().stream().map(Objects::toString).collect(Collectors.joining("\n")));
     }
 }
 

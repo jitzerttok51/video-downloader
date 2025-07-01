@@ -16,7 +16,7 @@ public record GithubReleaseAsset(
         @JsonProperty("updated_at") LocalDateTime updatedAt) {
 
     public UpdatePart toUpdatePart() {
-        String[] segments = name.split("-");
+        String[] segments = name.replace(".exe", "").split("-");
         return new UpdatePart(segments[segments.length - 1], downloadURL, name, digest);
     }
 }
