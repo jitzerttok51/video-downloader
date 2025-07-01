@@ -8,7 +8,6 @@ import picocli.CommandLine.Option;
 @Command(name = "demo", description = "...", mixinStandardHelpOptions = true)
 public class DemoCommand implements Runnable {
 
-    @Inject
     private AppInfoService appInfoService;
 
     @Option(names = {"-v", "--verbose"}, description = "...")
@@ -16,6 +15,11 @@ public class DemoCommand implements Runnable {
 
     public static void main(String[] args) throws Exception {
         PicocliRunner.run(DemoCommand.class, args);
+    }
+
+    @Inject
+    public void setAppInfoService(AppInfoService appInfoService) {
+        this.appInfoService = appInfoService;
     }
 
     public void run() {
