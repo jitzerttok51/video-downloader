@@ -4,6 +4,7 @@ import io.micronaut.core.type.Argument;
 import io.micronaut.serde.ObjectMapper;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import org.example.update.exceptions.UpdateRepositoryResponseCodeException;
 import org.example.update.model.GithubRelease;
 import org.example.update.model.Update;
 import org.example.update.model.UpdatePart;
@@ -34,7 +35,9 @@ public class GithubUpdateRepository implements UpdateRepository {
         Request request = new Request.Builder().url(getURL()).build();
         try(var response = client.newCall(request).execute()) {
             if(response.code() != 200) {
-                throw new RuntimeException(response.message());
+                throw new UpdateRepositoryResponseCodeException(
+                        "Failed to retrieve releases from "+getURL(),
+                        response);
             }
 
             // TODO: Exception if invalid format

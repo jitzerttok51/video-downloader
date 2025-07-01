@@ -2,6 +2,7 @@ package org.example.update.factory;
 
 import io.micronaut.context.BeanProvider;
 import jakarta.inject.Singleton;
+import org.example.update.exceptions.NoUpdateRepositoryDef;
 import org.example.update.repository.UpdateRepository;
 
 import java.net.URI;
